@@ -24,3 +24,4 @@ generic-y += topology.h
 generic-y += trace_clock.h
 generic-y += xor.h
 generic-y += barrier.h
+generic-y += preempt.h
