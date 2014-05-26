@@ -333,9 +333,8 @@ static suspend_state_t decode_state(const char *buf, size_t n)
 
 #ifdef CONFIG_SUSPEND
 	for (s = &pm_states[state]; state < PM_SUSPEND_MAX; s++, state++)
-		if (s->state && len == strlen(s->label)
-		    && !strncmp(buf, s->label, len))
-			return s->state;
+		if (len == strlen(s->label) && !strncmp(buf, s->label, len))
+			return state;
 #endif
 
 	return PM_SUSPEND_ON;
