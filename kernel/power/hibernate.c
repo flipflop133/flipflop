@@ -650,6 +650,11 @@ int hibernate(void)
 		return -EPERM;
 	}
 
+	if (!hibernation_available()) {
+		pr_debug("PM: Hibernation not available.\n");
+		return -EPERM;
+	}
+
 	lock_system_sleep();
 	/* The snapshot device should not be opened while we're running */
 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
