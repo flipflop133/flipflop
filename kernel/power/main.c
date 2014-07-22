@@ -623,7 +623,6 @@ static struct attribute_group attr_group = {
 	.attrs = g,
 };
 
-#ifdef CONFIG_PM_RUNTIME
 struct workqueue_struct *pm_wq;
 EXPORT_SYMBOL_GPL(pm_wq);
 
@@ -633,9 +632,6 @@ static int __init pm_start_workqueue(void)
 
 	return pm_wq ? 0 : -ENOMEM;
 }
-#else
-static inline int pm_start_workqueue(void) { return 0; }
-#endif
 
 static int __init pm_init(void)
 {
