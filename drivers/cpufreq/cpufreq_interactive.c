@@ -477,6 +477,39 @@ exit:
 	return;
 }
 
+static void cpufreq_interactive_idle_start(void)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu =
+		&per_cpu(cpuinfo, smp_processor_id());
+	int pending;
+
+	if (!down_read_trylock(&pcpu->enable_sem))
+		return;
+	if (!pcpu->governor_enabled) {
+		up_read(&pcpu->enable_sem);
+		return;
+	}
+
+	pending = timer_pending(&pcpu->cpu_timer);
+
+	if (pcpu->target_freq != pcpu->policy->min) {
+		/*
+		 * Entering idle while not at lowest speed.  On some
+		 * platforms this can hold the other CPU(s) at that speed
+		 * even though the CPU is idle. Set a timer to re-evaluate
+		 * speed so this idle CPU doesn't hold the other CPUs above
+		 * min indefinitely.  This should probably be a quirk of
+		 * the CPUFreq driver.
+		 */
+		if (!pending) {
+			pcpu->last_evaluated_jiffy = get_jiffies_64();
+			cpufreq_interactive_timer_resched(pcpu);
+		}
+	}
+
+	up_read(&pcpu->enable_sem);
+}
+
 static void cpufreq_interactive_idle_end(void)
 {
 	struct cpufreq_interactive_cpuinfo *pcpu =
