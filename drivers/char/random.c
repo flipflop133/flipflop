@@ -1110,7 +1110,7 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	__mix_pool_bytes(r, hash.w, sizeof(hash.w));
 	spin_unlock_irqrestore(&r->lock, flags);
 
-	memset(workspace, 0, sizeof(workspace));
+	memzero_explicit(workspace, sizeof(workspace));
 
 	/*
 	 * In case the hash function has some recognizable output
