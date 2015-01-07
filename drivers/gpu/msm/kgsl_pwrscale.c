@@ -310,7 +310,16 @@ static bool popp_stable(struct kgsl_device *device)
 			return false;
 	}
 
-	/* Finally check that there hasn't been a recent change */
+	/* If running at turbo, min, or already pushed don't change levels */
+	if (test_bit(POPP_PUSH, &psc->popp_state) ||
+			pwr->active_pwrlevel == 0 ||
+			(!psc->popp_level &&
+			pwr->active_pwrlevel == pwr->min_pwrlevel))
+		return false;
+
+	t = ktime_to_ms(ktime_get());
+    
+    /* Finally check that there hasn't been a recent change */
 	if ((device->pwrscale.freq_change_time + STABLE_TIME) < t) {
 		device->pwrscale.freq_change_time = t;
 		return true;
@@ -838,6 +847,7 @@ int kgsl_pwrscale_init(struct device *dev, const char *governor)
 				sizeof(struct kgsl_pwr_event), GFP_KERNEL);
 		pwrscale->history[i].type = i;
 	}
+	set_bit(POPP_ON, &pwrscale->popp_state);
 
 	return 0;
 }
