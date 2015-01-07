@@ -255,62 +255,20 @@ static int _thermal_adjust(struct kgsl_pwrctrl *pwr, int level)
 static bool popp_stable(struct kgsl_device *device)
 {
 	s64 t;
-	s64 nap_time = 0;
-	s64 go_time = 0;
-	int i, index;
-	int nap = 0;
-	s64 percent_nap = 0;
-	struct kgsl_pwr_event *e;
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	struct kgsl_pwrscale *psc = &device->pwrscale;
 
 	if (!test_bit(POPP_ON, &psc->popp_state))
 		return false;
 
-	/* If already pushed or running naturally at min don't push further */
-	if (test_bit(POPP_PUSH, &psc->popp_state))
-		return false;
-	if (!psc->popp_level &&
-			pwr->active_pwrlevel != 0)
-		return false;
-	if (psc->history[KGSL_PWREVENT_STATE].events == NULL)
+	/* If running at turbo, min, or already pushed don't change levels */
+	if (test_bit(POPP_PUSH, &psc->popp_state) ||
+			pwr->active_pwrlevel == 0 ||
+			(!psc->popp_level &&
+			pwr->active_pwrlevel == pwr->min_pwrlevel))
 		return false;
 
 	t = ktime_to_ms(ktime_get());
-	/* Check for recent NAP statistics: NAPping regularly and well? */
-	if (pwr->active_pwrlevel == 0) {
-		index = psc->history[KGSL_PWREVENT_STATE].index;
-		i = index > 0 ? (index - 1) :
-			(psc->history[KGSL_PWREVENT_STATE].size - 1);
-		while (i != index) {
-			e = &psc->history[KGSL_PWREVENT_STATE].events[i];
-			if (e->data == KGSL_STATE_NAP ||
-				e->data == KGSL_STATE_SLUMBER) {
-				if (ktime_to_ms(e->start) + STABLE_TIME > t) {
-					nap++;
-					nap_time += e->duration;
-				}
-			} else if (e->data == KGSL_STATE_ACTIVE) {
-				if (ktime_to_ms(e->start) + STABLE_TIME > t)
-					go_time += e->duration;
-			}
-			if (i == 0)
-				i = psc->history[KGSL_PWREVENT_STATE].size - 1;
-			else
-				i--;
-		}
-		if (nap_time && go_time) {
-			percent_nap = 100 * nap_time;
-			do_div(percent_nap, nap_time + go_time);
-		}
-		trace_kgsl_popp_nap(device, (int)nap_time / 1000, nap,
-				percent_nap);
-		/* If running high at turbo, don't push */
-		if (nap < MIN_SLEEP_PERIODS || percent_nap < MIN_SLEEP_PERCENT)
-			return false;
-	}
-
-	/* Finally check that there hasn't been a recent change */
 	if ((device->pwrscale.freq_change_time + STABLE_TIME) < t) {
 		device->pwrscale.freq_change_time = t;
 		return true;
@@ -357,16 +315,12 @@ bool kgsl_popp_check(struct kgsl_device *device)
 static void popp_trans1(struct kgsl_device *device)
 {
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
-	struct kgsl_pwrlevel *pl = &pwr->pwrlevels[pwr->active_pwrlevel];
 	struct kgsl_pwrscale *psc = &device->pwrscale;
 	int old_level = psc->popp_level;
 
 	switch (old_level) {
 	case 0:
 		psc->popp_level = 2;
-		/* If the current level has a high default bus don't push it */
-		if (pl->bus_freq == pl->bus_max)
-			pwr->bus_mod = 1;
 		kgsl_pwrctrl_pwrlevel_change(device, pwr->active_pwrlevel + 1);
 		break;
 	case 1:
@@ -431,7 +385,6 @@ static int popp_trans2(struct kgsl_device *device, int level)
 
 	return level;
 }
-
 /*
  * kgsl_devfreq_target - devfreq_dev_profile.target callback
  * @dev: see devfreq.h
@@ -838,6 +791,7 @@ int kgsl_pwrscale_init(struct device *dev, const char *governor)
 				sizeof(struct kgsl_pwr_event), GFP_KERNEL);
 		pwrscale->history[i].type = i;
 	}
+	set_bit(POPP_ON, &pwrscale->popp_state);
 
 	return 0;
 }
