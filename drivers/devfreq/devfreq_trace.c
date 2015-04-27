@@ -18,4 +18,3 @@
 /* Instantiate tracepoints */
 #define CREATE_TRACE_POINTS
 #include "devfreq_trace.h"
-

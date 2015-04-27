@@ -141,5 +141,3 @@ module_exit(devfreq_vbif_exit);
 
 MODULE_DESCRIPTION("VBIF based GPU bus BW voting governor");
 MODULE_LICENSE("GPL v2");
-
-
