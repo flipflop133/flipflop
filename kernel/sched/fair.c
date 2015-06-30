@@ -5225,6 +5225,8 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p, int sync)
 	return 0;
 }
 
+unsigned int capacity_margin = 1280; /* ~20% margin */
+
 /*
  * find_idlest_group finds and returns the least busy CPU group within the
  * domain.
