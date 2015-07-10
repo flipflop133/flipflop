@@ -904,12 +904,12 @@ static uint32_t get_tsens_sensor_for_client_id(struct tsens_tm_device *tmdev,
 	if (!of_match_node(tsens_match, of_node)) {
 		pr_err("Need to read SoC specific fuse map\n");
 		return -ENODEV;
-	} else {
-		id = of_match_node(tsens_match, of_node);
-		if (id == NULL) {
-			pr_err("can not find tsens_match of_node\n");
-			return -ENODEV;
-		}
+	}
+
+	id = of_match_node(tsens_match, of_node);
+	if (id == NULL) {
+		pr_err("can not find tsens_match of_node\n");
+		return -ENODEV;
 	}
 
 	if (!strcmp(id->compatible, "qcom,msm8996-tsens")) {
@@ -1023,12 +1023,12 @@ int tsens_get_hw_id_mapping(int sensor_sw_id, int *sensor_client_id)
 	if (!of_match_node(tsens_match, of_node)) {
 		pr_err("Need to read SoC specific fuse map\n");
 		return -ENODEV;
-	} else {
-		id = of_match_node(tsens_match, of_node);
-		if (id == NULL) {
-			pr_err("can not find tsens_match of_node\n");
-			return -ENODEV;
-		}
+	}
+
+	id = of_match_node(tsens_match, of_node);
+	if (id == NULL) {
+		pr_err("can not find tsens_match of_node\n");
+		return -ENODEV;
 	}
 
 	if (!strcmp(id->compatible, "qcom,msm8996-tsens")) {
@@ -2165,6 +2165,7 @@ static irqreturn_t tsens_tm_critical_irq_thread(int irq, void *data)
 
 		if (critical_thr) {
 			unsigned long temp;
+
 			tsens_tz_get_temp(tm->sensor[i].tz_dev, &temp);
 			rc = tsens_get_sw_id_mapping_for_controller(
 					tm->sensor[i].sensor_hw_num,
@@ -2315,8 +2316,8 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
 	for (i = 0; i < tm->tsens_num_sensor; i++) {
 		bool upper_thr = false, lower_thr = false;
 		uint32_t addr_offset;
-		sensor_sw_id = tm->sensor[i].sensor_sw_id;
 
+		sensor_sw_id = tm->sensor[i].sensor_sw_id;
 		addr_offset = tm->sensor[i].sensor_hw_num *
 						TSENS_SN_ADDR_OFFSET;
 		status = readl_relaxed(sensor_status_addr + addr_offset);
@@ -2919,6 +2920,7 @@ static int tsens_calib_msm8909_sensors(struct tsens_tm_device *tmdev)
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3086,6 +3088,7 @@ static int tsens_calib_8939_sensors(struct tsens_tm_device *tmdev)
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3209,6 +3212,7 @@ static int tsens_calib_8916_sensors(struct tsens_tm_device *tmdev)
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3287,6 +3291,7 @@ calibration_less_mode:
 compute_intercept_slope:
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0, adc_code_of_tempx = 0;
+
 		tmdev->sensor[i].calib_data_point2 = tsens_base1_data;
 		tmdev->sensor[i].calib_data_point1 = tsens_base0_data;
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3529,6 +3534,7 @@ calibration_less_mode:
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0, adc_code_of_tempx = 0;
+
 		tmdev->sensor[i].calib_data_point2 = tsens_base1_data;
 		tmdev->sensor[i].calib_data_point1 = tsens_base0_data;
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3756,6 +3762,7 @@ calibration_less_mode:
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0, adc_code_of_tempx = 0;
+
 		tmdev->sensor[i].calib_data_point2 = tsens_base1_data;
 		tmdev->sensor[i].calib_data_point1 = tsens_base0_data;
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -3870,6 +3877,7 @@ calibration_less_mode:
 compute_intercept_slope:
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -4026,6 +4034,7 @@ calibration_less_mode:
 compute_intercept_slope:
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -4359,6 +4368,7 @@ calibration_less_mode:
 compute_intercept_slope:
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -4631,6 +4641,7 @@ calibration_less_mode:
 compute_intercept_slope:
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0;
+
 		tmdev->sensor[i].calib_data_point2 = calib_tsens_point2_data[i];
 		tmdev->sensor[i].calib_data_point1 = calib_tsens_point1_data[i];
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -4707,6 +4718,7 @@ static int tsens_calib_msmzirc_sensors(struct tsens_tm_device *tmdev)
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		int32_t num = 0, den = 0, adc_code_of_tempx = 0;
+
 		tmdev->sensor[i].calib_data_point2 = tsens_base1_data;
 		tmdev->sensor[i].calib_data_point1 = tsens_base0_data;
 		pr_debug("sensor:%d - calib_data_point1:0x%x, calib_data_point2:0x%x\n",
@@ -4804,10 +4816,8 @@ static int get_device_tree_data(struct platform_device *pdev,
 
 	tsens_slope_data = devm_kzalloc(&pdev->dev,
 			tsens_num_sensors * sizeof(u32), GFP_KERNEL);
-	if (!tsens_slope_data) {
-		dev_err(&pdev->dev, "can not allocate slope data\n");
+	if (!tsens_slope_data)
 		return -ENOMEM;
-	}
 
 	rc = of_property_read_u32_array(of_node,
 		"qcom,slope", tsens_slope_data, tsens_num_sensors);
@@ -4819,12 +4829,12 @@ static int get_device_tree_data(struct platform_device *pdev,
 	if (!of_match_node(tsens_match, of_node)) {
 		pr_err("Need to read SoC specific fuse map\n");
 		return -ENODEV;
-	} else {
-		id = of_match_node(tsens_match, of_node);
-		if (id == NULL) {
-			pr_err("can not find tsens_match of_node\n");
-			return -ENODEV;
-		}
+	}
+
+	id = of_match_node(tsens_match, of_node);
+	if (id == NULL) {
+		pr_err("can not find tsens_match of_node\n");
+		return -ENODEV;
 	}
 
 	for (i = 0; i < tsens_num_sensors; i++)
@@ -4839,17 +4849,13 @@ static int get_device_tree_data(struct platform_device *pdev,
 
 	sensor_id = devm_kzalloc(&pdev->dev,
 		tsens_num_sensors * sizeof(u32), GFP_KERNEL);
-	if (!sensor_id) {
-		dev_err(&pdev->dev, "can not allocate sensor id\n");
+	if (!sensor_id)
 		return -ENOMEM;
-	}
 
 	client_id = devm_kzalloc(&pdev->dev,
 		tsens_num_sensors * sizeof(u32), GFP_KERNEL);
-	if (!client_id) {
-		dev_err(&pdev->dev, "can not allocate client id\n");
+	if (!client_id)
 		return -ENOMEM;
-	}
 
 	rc = of_property_read_u32_array(of_node,
 		"qcom,client-id", client_id, tsens_num_sensors);
@@ -5101,8 +5107,6 @@ static void tsens_debugfs_init(void)
 		pr_err("Failed to create TSENS folder\n");
 		return;
 	}
-
-	return;
 }
 
 int tsens_sensor_sw_idx = 0;
@@ -5118,6 +5122,7 @@ static int tsens_thermal_zone_register(struct tsens_tm_device *tmdev)
 
 	for (i = 0; i < tmdev->tsens_num_sensor; i++) {
 		char name[18];
+
 		snprintf(name, sizeof(name), "tsens_tz_sensor%d",
 					tsens_sensor_sw_idx);
 		tmdev->sensor[i].mode = THERMAL_DEVICE_ENABLED;
