@@ -70,6 +70,10 @@ Optional properties:
 		total number of supported sensors with each controller instance.
 - qcom,valid-status-check: If property is present, check the VALID bit is set
 		before reporting the temperature data.
+- qcom,temp1-offset: If property is present, Use these offset values
+		to be added for 30 deg calib points.
+- qcom,temp2-offset: If property is present, Use these offset values
+		to be added for 120 deg calib points.
 
 Example:
 
