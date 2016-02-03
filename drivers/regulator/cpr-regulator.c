@@ -3981,6 +3981,7 @@ static int cpr_init_cpr(struct platform_device *pdev,
 
 	rc = cpr_init_cpr_efuse(pdev, cpr_vreg);
 	if (rc)
+ monitor
 		return rc;
 
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rbcpr");
