@@ -39,7 +39,11 @@
 #define WG_DEFAULT		0
 #define S2W_DEFAULT		0
 #define S2S_DEFAULT		0
+<<<<<<< HEAD
 #define WG_PWRKEY_DUR           60
+=======
+#define WG_PWRKEY_DUR           100
+>>>>>>> e79ec883d88... wake_gestures: adjust timing for camera gesture
 
 /* shamu */
 #define SWEEP_Y_MAX             1920
@@ -640,14 +644,11 @@ static ssize_t doubletap2wake_dump(struct device *dev,
 	else
 		dt2w_switch_changed = true;
 
-<<<<<<< HEAD
-=======
 	if (scr_suspended() && (!s2w_switch || !s2w_switch_temp) &&
 			(!camera_switch || !camera_switch_temp) && !dt2w_switch_temp) {
 		timeout_pwrtrigger();
 	}
 
->>>>>>> abcb898d30e... wake_gestures: add camera launch gesture
 	return count;
 }
 
