@@ -625,6 +625,7 @@ static void populate_codec_list(struct msm_compr_audio *prtd)
 	prtd->compr_cap.codecs[6] = SND_AUDIOCODEC_WMA;
 	prtd->compr_cap.codecs[7] = SND_AUDIOCODEC_WMA_PRO;
 	prtd->compr_cap.codecs[8] = SND_AUDIOCODEC_FLAC;
+    prtd->compr_cap.codecs[13] = SND_AUDIOCODEC_APTX;
 }
 
 static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
@@ -639,6 +640,8 @@ static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
 	struct asm_wma_cfg wma_cfg;
 	struct asm_wmapro_cfg wma_pro_cfg;
 	struct asm_flac_cfg flac_cfg;
+    struct aptx_dec_bt_addr_cfg aptx_cfg;
+    
 	int ret = 0;
 	uint16_t bit_width = 16;
 	bool use_default_chmap = true;
@@ -766,6 +769,25 @@ static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
 				__func__, ret);
 
 		break;
+    case FORMAT_APTX:
+		pr_debug("SND_AUDIOCODEC_APTX\n");
+		memset(&aptx_cfg, 0x0, sizeof(struct aptx_dec_bt_addr_cfg));
+		ret = q6asm_stream_media_format_block_aptx_dec(
+							prtd->audio_client,
+							prtd->sample_rate,
+							stream_id);
+		if (ret >= 0) {
+			aptx_cfg.nap = codec_options->aptx_dec.nap;
+			aptx_cfg.uap = codec_options->aptx_dec.uap;
+			aptx_cfg.lap = codec_options->aptx_dec.lap;
+			q6asm_set_aptx_dec_bt_addr(prtd->audio_client,
+							&aptx_cfg);
+		} else {
+			pr_err("%s: CMD Format block failed ret %d\n",
+					 __func__, ret);
+		}
+		break;
+        
 	default:
 		pr_debug("%s, unsupported format, skip", __func__);
 		break;
@@ -1283,7 +1305,11 @@ static int msm_compr_set_params(struct snd_compr_stream *cstream,
 		prtd->codec = FORMAT_FLAC;
 		break;
 	}
-
+	case SND_AUDIOCODEC_APTX: {
+		pr_debug("%s: SND_AUDIOCODEC_APTX\n", __func__);
+		prtd->codec = FORMAT_APTX;
+		break;
+	}
 	default:
 		pr_err("codec not supported, id =%d\n", params->codec.id);
 		return -EINVAL;
@@ -2035,6 +2061,8 @@ static int msm_compr_get_codec_caps(struct snd_compr_stream *cstream,
 		break;
 	case SND_AUDIOCODEC_FLAC:
 		break;
+    case SND_AUDIOCODEC_APTX:
+		break;
 	default:
 		pr_err("%s: Unsupported audio codec %d\n",
 			__func__, codec->codec);
@@ -2430,6 +2458,7 @@ static int msm_compr_send_dec_params(struct snd_compr_stream *cstream,
 	switch (prtd->codec) {
 	case FORMAT_MP3:
 	case FORMAT_MPEG4_AAC:
+	case FORMAT_APTX:
 		pr_debug("%s: no runtime parameters for codec: %d\n", __func__,
 			 prtd->codec);
 		break;
@@ -2491,6 +2520,7 @@ static int msm_compr_dec_params_put(struct snd_kcontrol *kcontrol,
 	case FORMAT_MP3:
 	case FORMAT_MPEG4_AAC:
 	case FORMAT_FLAC:
+    case FORMAT_APTX:
 		pr_debug("%s: no runtime parameters for codec: %d\n", __func__,
 			 prtd->codec);
 		break;
