@@ -93,7 +93,8 @@
 #define SND_AUDIOCODEC_WMA_PRO               ((__u32) 0x00000016)
 #define SND_AUDIOCODEC_DTS             	     ((__u32) 0x00000017)
 #define SND_AUDIOCODEC_EAC3                  ((__u32) 0x00000018)
-#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_EAC3
+#define SND_AUDIOCODEC_APTX                  ((__u32) 0x00000022)
+#define SND_AUDIOCODEC_MAX                   SND_AUDIOCODEC_APTX
 /*
  * Profile and modes are listed with bit masks. This allows for a
  * more compact representation of fields that will not evolve
@@ -350,6 +351,13 @@ struct snd_dec_flac {
 	__u16 min_frame_size;
 	__u16 max_frame_size;
 };
+
+struct snd_dec_aptx {
+	__u32 lap;
+	__u32 uap;
+	__u32 nap;
+};
+
 union snd_codec_options {
 	struct snd_enc_wma wma;
 	struct snd_enc_vorbis vorbis;
@@ -358,6 +366,7 @@ union snd_codec_options {
 	struct snd_enc_generic generic;
 	struct snd_dec_ddp ddp;
 	struct snd_dec_flac flac_dec;
+    struct snd_dec_aptx aptx_dec;
 };
 
 /** struct snd_codec_desc - description of codec capabilities
