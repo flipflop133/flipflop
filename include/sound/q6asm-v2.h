@@ -46,7 +46,9 @@
 #define FORMAT_EAC3         0x0014
 #define FORMAT_MP2          0x0015
 #define FORMAT_FLAC         0x0016
-#define FORMAT_APTX         0x001d
+#define FORMAT_DSD          0x001d
+#define FORMAT_APTX         0x001e
+
 
 #define ENCDEC_SBCBITRATE   0x0001
 #define ENCDEC_IMMEDIATE_DECODE 0x0002
