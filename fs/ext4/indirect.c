@@ -1445,12 +1445,15 @@ end_range:
 						   partial->p + 1,
 						   partial2->p,
 						   (chain+n-1) - partial);
+                while (partial > chain) {
 				BUFFER_TRACE(partial->bh, "call brelse");
 				brelse(partial->bh);
+                }
+                while (partial2 > chain2) {
 				BUFFER_TRACE(partial2->bh, "call brelse");
 				brelse(partial2->bh);
-			}
-			return 0;
+                }
+                return 0;
 		}
 		/*
 		 * Clear the ends of indirect blocks on the shared branch
