@@ -4290,14 +4290,12 @@ no_journal:
 	ext4_free_blocks_count_set(sbi->s_es, 
 				   EXT4_C2B(sbi, block));
 	ext4_superblock_csum_set(sb);
-	err = percpu_counter_init(&sbi->s_freeclusters_counter, block,
-				  GFP_KERNEL);
+	err = percpu_counter_init(&sbi->s_freeclusters_counter, block);
 	if (!err) {
 		unsigned long freei = ext4_count_free_inodes(sb);
 		sbi->s_es->s_free_inodes_count = cpu_to_le32(freei);
 		ext4_superblock_csum_set(sb);
-		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei,
-					  GFP_KERNEL);
+		err = percpu_counter_init(&sbi->s_freeinodes_counter, freei);
 	}
 	if (!err)
 		err = percpu_counter_init(&sbi->s_dirs_counter,
