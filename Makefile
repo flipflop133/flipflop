@@ -374,7 +374,16 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
-		   -std=gnu89
+		   -std=gnu89 \
+		   -Wno-unused-const-variable \
+		   -Wno-misleading-indentation \
+		   -Wno-address-of-packed-member \
+		   -Wno-switch-unreachable \
+		   -Wno-bool-compare \
+		   -Wno-array-bounds \
+		   -Wno-format-truncation \
+		   -Wno-stringop-overflow
+
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
