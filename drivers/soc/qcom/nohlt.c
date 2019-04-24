@@ -18,6 +18,7 @@
 #include <linux/debugfs.h>
 #include <linux/fs.h>
 #include <linux/cpu.h>
+#include <linux/sched.h>
 
 static int set_nohalt(void *data, u64 val)
 {

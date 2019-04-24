@@ -12,7 +12,25 @@
 
 #include <trace/events/power.h>
 
-static int __read_mostly cpu_idle_force_poll;
+int __read_mostly cpu_idle_force_poll;
+
+static int set_nohalt(void *data, u64 val)
+{
+	if (val)
+		cpu_idle_poll_ctrl(true);
+	else
+		cpu_idle_poll_ctrl(false);
+	return 0;
+}
+
+extern int cpu_idle_force_poll;
+
+static int get_nohalt(void *data, u64 *val)
+{
+	*val = (unsigned int)cpu_idle_force_poll;
+
+	return 0;
+}
 
 void cpu_idle_poll_ctrl(bool enable)
 {
@@ -22,6 +40,24 @@ void cpu_idle_poll_ctrl(bool enable)
 		cpu_idle_force_poll--;
 		WARN_ON_ONCE(cpu_idle_force_poll < 0);
 	}
+}
+
+static DEFINE_PER_CPU(int, idle_force_poll);
+
+void per_cpu_idle_poll_ctrl(int cpu, bool enable)
+{
+	if (enable) {
+		per_cpu(idle_force_poll, cpu)++;
+	} else {
+		per_cpu(idle_force_poll, cpu)--;
+		WARN_ON_ONCE(per_cpu(idle_force_poll, cpu) < 0);
+	}
+
+	/*
+	 * Make sure poll mode is entered on the relevant CPU after the flag is
+	 * set
+	 */
+	mb();
 }
 
 #ifdef CONFIG_GENERIC_IDLE_POLL_SETUP
