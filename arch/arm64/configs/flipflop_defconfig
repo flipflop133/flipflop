@@ -719,3 +719,4 @@ CONFIG_WAKE_GESTURES=y
 # Vibrator control
 #
 # CONFIG_QPNP_VIBRATOR is not set
+CONFIG_QPNP_HAPTIC=y
