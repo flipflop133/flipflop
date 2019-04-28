@@ -28,6 +28,7 @@
 #include <linux/slab.h>
 #include <linux/syscore_ops.h>
 #include <linux/tick.h>
+#include <linux/pm_opp.h>
 #include <trace/events/power.h>
 
 /**
