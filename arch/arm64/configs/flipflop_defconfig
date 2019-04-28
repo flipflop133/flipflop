@@ -694,3 +694,8 @@ CONFIG_DEFAULT_HOSTNAME="(none)"
 # Voltage Control
 #
 CONFIG_VOLTAGE_CONTROL=y
+
+#
+# Boeffla Wakelock Control
+#
+CONFIG_BOEFFLA_WL_BLOCKER=y
