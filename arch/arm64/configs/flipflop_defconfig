@@ -699,3 +699,8 @@ CONFIG_VOLTAGE_CONTROL=y
 # Boeffla Wakelock Control
 #
 CONFIG_BOEFFLA_WL_BLOCKER=y
+
+#
+# Backlight
+#
+CONFIG_FB_MSM_BACKLIGHT=y
