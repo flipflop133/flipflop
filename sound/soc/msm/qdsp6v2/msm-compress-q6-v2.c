@@ -641,6 +641,7 @@ static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
 	struct asm_wmapro_cfg wma_pro_cfg;
 	struct asm_flac_cfg flac_cfg;
     struct aptx_dec_bt_addr_cfg aptx_cfg;
+    union snd_codec_options *codec_options;
     
 	int ret = 0;
 	uint16_t bit_width = 16;

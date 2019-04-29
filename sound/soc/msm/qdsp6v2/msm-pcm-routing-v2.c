@@ -45,6 +45,7 @@
 #include "msm-ds2-dap-config.h"
 #include "q6voice.h"
 #include "sound/q6lsm.h"
+#include "sound/apr_audio-v2.h"
 
 static int get_cal_path(int path_type);
 

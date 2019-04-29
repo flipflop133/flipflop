@@ -40,6 +40,7 @@
 #include <sound/q6audio-v2.h>
 #include <sound/audio_cal_utils.h>
 #include <sound/msm-dts-eagle.h>
+#include <sound/adsp_err.h>
 
 #define TRUE        0x01
 #define FALSE       0x00
