@@ -754,10 +754,9 @@ enum tsens_calib_fuse_map_type {
 	TSENS_CALIB_FUSE_MAP_NONE,
 	TSENS_CALIB_FUSE_MAP_8992,
 	TSENS_CALIB_FUSE_MAP_MSM8952,
-	TSENS_CALIB_FUSE_MAP_MDMFERMIUM,
-	TSENS_CALIB_FUSE_MAP_MSMTHORIUM,
+	TSENS_CALIB_FUSE_MAP_MDM9607,
 	TSENS_CALIB_FUSE_MAP_MSM8937,
-	TSENS_CALIB_FUSE_MAP_MSMGOLD,
+	TSENS_CALIB_FUSE_MAP_MSM8917,
 	TSENS_CALIB_FUSE_MAP_NUM,
 };
 
@@ -919,17 +918,17 @@ static struct of_device_id tsens_match[] = {
 	{       .compatible = "qcom,msm8952-tsens",
 		.data = (void *)TSENS_CALIB_FUSE_MAP_MSM8952,
 	},
-	{	.compatible = "qcom,mdmfermium-tsens",
-		.data = (void *)TSENS_CALIB_FUSE_MAP_MDMFERMIUM,
+	{	.compatible = "qcom,mdm9607-tsens",
+		.data = (void *)TSENS_CALIB_FUSE_MAP_MDM9607,
 	},
-	{	.compatible = "qcom,msmtitanium-tsens",
+	{	.compatible = "qcom,msm8953-tsens",
 		.data = (void *)TSENS_CALIB_FUSE_MAP_NONE,
 	},
-	{	.compatible = "qcom,msmthorium-tsens",
-		.data = (void *)TSENS_CALIB_FUSE_MAP_MSMTHORIUM,
+	{	.compatible = "qcom,msm8937-tsens",
+		.data = (void *)TSENS_CALIB_FUSE_MAP_MSM8937,
 	},
-	{	.compatible = "qcom,msmgold-tsens",
-		.data = (void *)TSENS_CALIB_FUSE_MAP_MSMGOLD,
+	{	.compatible = "qcom,msm8917-tsens",
+		.data = (void *)TSENS_CALIB_FUSE_MAP_MSM8917,
 	},
 	{	.compatible = "qcom,msmcobalt-tsens",
 		.data = (void *)TSENS_CALIB_FUSE_MAP_NONE,
@@ -2741,7 +2740,7 @@ static int tsens_hw_init(struct tsens_tm_device *tmdev)
 	return 0;
 }
 
-static int tsens_calib_msm8937_msmgold_sensors(struct tsens_tm_device *tmdev)
+static int tsens_calib_msm8937_msm8917_sensors(struct tsens_tm_device *tmdev)
 {
 	int i, tsens_base0_data = 0, tsens_base1_data = 0, ext_sen = 1;
 	int tsens0_point1 = 0, tsens0_point2 = 0;
@@ -2760,7 +2759,7 @@ static int tsens_calib_msm8937_msmgold_sensors(struct tsens_tm_device *tmdev)
 	uint32_t calib_data[5] = {0, 0, 0, 0, 0};
 	uint32_t calib_tsens_point1_data[11], calib_tsens_point2_data[11];
 
-	if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSMGOLD)
+	if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSM8917)
 		ext_sen = 0;
 
 	if (!tmdev->calibration_less_mode) {
@@ -2994,7 +2993,7 @@ static int tsens_calib_msm8937_msmgold_sensors(struct tsens_tm_device *tmdev)
 	return 0;
 }
 
-static int tsens_calib_mdmfermium_sensors(struct tsens_tm_device *tmdev)
+static int tsens_calib_mdm9607_sensors(struct tsens_tm_device *tmdev)
 {
 	int i, tsens_base0_data = 0, tsens_base1_data = 0;
 	int tsens0_point1 = 0, tsens0_point2 = 0;
@@ -3012,8 +3011,8 @@ static int tsens_calib_mdmfermium_sensors(struct tsens_tm_device *tmdev)
 		calib_data[2] = readl_relaxed(tmdev->tsens_calib_addr + 0x230);
 
 		tsens_calibration_mode =
-			(calib_data[2] & TSENS_MDMFERMIUM_TSENS_CAL_SEL) >>
-				TSENS_MDMFERMIUM_CAL_SEL_SHIFT;
+			(calib_data[2] & TSENS_MDM9607_TSENS_CAL_SEL) >>
+				TSENS_MDM9607_CAL_SEL_SHIFT;
 
 		pr_debug("calib mode is %d\n", tsens_calibration_mode);
 	}
@@ -3034,15 +3033,15 @@ static int tsens_calib_mdmfermium_sensors(struct tsens_tm_device *tmdev)
 		(tsens_calibration_mode ==
 					TSENS_TWO_POINT_CALIB_N_OFFSET_WA)) {
 		tsens_base0_data =
-				(calib_data[0] & TSENS_MDMFERMIUM_BASE0_MASK);
-		tsens0_point1 = (calib_data[0] & TSENS0_MDMFERMIUM_POINT1_MASK)
-			>> TSENS0_MDMFERMIUM_POINT1_SHIFT;
-		tsens1_point1 = (calib_data[0] & TSENS1_MDMFERMIUM_POINT1_MASK)
-			>> TSENS1_MDMFERMIUM_POINT1_SHIFT;
-		tsens2_point1 = (calib_data[1] & TSENS2_MDMFERMIUM_POINT1_MASK);
-		tsens3_point1 = (calib_data[1] & TSENS3_MDMFERMIUM_POINT1_MASK)
-			>> TSENS3_MDMFERMIUM_POINT1_SHIFT;
-		tsens4_point1 = (calib_data[2] & TSENS4_MDMFERMIUM_POINT1_MASK);
+				(calib_data[0] & TSENS_MDM9607_BASE0_MASK);
+		tsens0_point1 = (calib_data[0] & TSENS0_MDM9607_POINT1_MASK)
+			>> TSENS0_MDM9607_POINT1_SHIFT;
+		tsens1_point1 = (calib_data[0] & TSENS1_MDM9607_POINT1_MASK)
+			>> TSENS1_MDM9607_POINT1_SHIFT;
+		tsens2_point1 = (calib_data[1] & TSENS2_MDM9607_POINT1_MASK);
+		tsens3_point1 = (calib_data[1] & TSENS3_MDM9607_POINT1_MASK)
+			>> TSENS3_MDM9607_POINT1_SHIFT;
+		tsens4_point1 = (calib_data[2] & TSENS4_MDM9607_POINT1_MASK);
 	}
 
 	if ((tsens_calibration_mode == TSENS_TWO_POINT_CALIB) ||
@@ -5455,12 +5454,12 @@ static int tsens_calib_sensors(struct tsens_tm_device *tmdev)
 		rc = tsens_calib_8992_sensors(tmdev);
 	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSM8952)
 		rc = tsens_calib_msm8952_sensors(tmdev);
-	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MDMFERMIUM)
-		rc = tsens_calib_mdmfermium_sensors(tmdev);
+	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MDM9607)
+		rc = tsens_calib_mdm9607_sensors(tmdev);
 	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSM8937)
-		rc = tsens_calib_msm8937_msmgold_sensors(tmdev);
-	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSMGOLD)
-		rc = tsens_calib_msm8937_msmgold_sensors(tmdev);
+		rc = tsens_calib_msm8937_msm8917_sensors(tmdev);
+	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_MSM8917)
+		rc = tsens_calib_msm8937_msm8917_sensors(tmdev);
 	else if (tmdev->calib_mode == TSENS_CALIB_FUSE_MAP_NONE) {
 		pr_debug("Fuse map info not required\n");
 		rc = 0;
@@ -5573,12 +5572,12 @@ static int get_device_tree_data(struct platform_device *pdev,
 		tmdev->tsens_type = TSENS_TYPE2;
 	else if (!strcmp(id->compatible, "qcom,msm8996-tsens"))
 		tmdev->tsens_type = TSENS_TYPE3;
-	else if (!strcmp(id->compatible, "qcom,msmtitanium-tsens") ||
+	else if (!strcmp(id->compatible, "qcom,msm8953-tsens") ||
 		(!strcmp(id->compatible, "qcom,msmcobalt-tsens"))) {
 		tmdev->tsens_type = TSENS_TYPE3;
 		tsens_poll_check = 0;
 	} else if (!strcmp(id->compatible, "qcom,msm8952-tsens") ||
-			(!strcmp(id->compatible, "qcom,msmgold-tsens")) ||
+			(!strcmp(id->compatible, "qcom,msm8917-tsens")) ||
 			(!strcmp(id->compatible, "qcom,msm8937-tsens")))
 		tmdev->tsens_type = TSENS_TYPE4;
 	else
@@ -5609,7 +5608,7 @@ static int get_device_tree_data(struct platform_device *pdev,
 
 	if (!strcmp(id->compatible, "qcom,msm8996-tsens") ||
 		(!strcmp(id->compatible, "qcom,msmcobalt-tsens")) ||
-		(!strcmp(id->compatible, "qcom,msmtitanium-tsens"))) {
+		(!strcmp(id->compatible, "qcom,msm8953-tsens"))) {
 		tmdev->tsens_critical_irq =
 				platform_get_irq_byname(pdev,
 						"tsens-critical");
