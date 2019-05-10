@@ -77,6 +77,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x0>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile0>;
 			qcom,acc = <&acc0>;
 			qcom,ldo = <&ldo0>;
 			next-level-cache = <&L2_0>;
@@ -112,6 +113,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x1>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile1>;
 			qcom,acc = <&acc1>;
 			qcom,ldo = <&ldo1>;
 			next-level-cache = <&L2_0>;
@@ -141,6 +143,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x2>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile2>;
 			qcom,acc = <&acc2>;
 			qcom,ldo = <&ldo2>;
 			next-level-cache = <&L2_0>;
@@ -170,6 +173,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x3>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile3>;
 			qcom,acc = <&acc3>;
 			qcom,ldo = <&ldo3>;
 			next-level-cache = <&L2_0>;
@@ -199,6 +203,7 @@
 			compatible = "arm,cortex-a57";
 			reg = <0x100>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile4>;
 			qcom,acc = <&acc4>;
 			qcom,ldo = <&ldo4>;
 			next-level-cache = <&L2_1>;
@@ -238,6 +243,7 @@
 			compatible = "arm,cortex-a57";
 			reg = <0x101>;
 			enable-method = "qcom,8994-arm-cortex-acc";
+            qcom,limits-info = <&mitigation_profile5>;
 			qcom,acc = <&acc5>;
 			qcom,ldo = <&ldo5>;
 			next-level-cache = <&L2_1>;
@@ -2609,19 +2615,16 @@
 		sensor_information6: qcom,sensor-information@6 {
 			qcom,sensor-type = "tsens";
 			qcom,sensor-name = "tsens_tz_sensor7";
-			qcom,alias-name = "cpu0-1";
 		};
 
 		sensor_information7: qcom,sensor-information@7 {
 			qcom,sensor-type = "tsens";
 			qcom,sensor-name = "tsens_tz_sensor9";
-			qcom,alias-name = "cpu2";
 		};
 
 		sensor_information8: qcom,sensor-information@8 {
 			qcom,sensor-type = "tsens";
 			qcom,sensor-name = "tsens_tz_sensor10";
-			qcom,alias-name = "cpu3";
 		};
 
 		sensor_information9: qcom,sensor-information@9 {
@@ -2638,13 +2641,11 @@
 		sensor_information11: qcom,sensor-information@11 {
 			qcom,sensor-type = "tsens";
 			qcom,sensor-name = "tsens_tz_sensor13";
-			qcom,alias-name = "cpu4";
 		};
 
 		sensor_information12: qcom,sensor-information@12 {
 			qcom,sensor-type = "tsens";
 			qcom,sensor-name = "tsens_tz_sensor14";
-			qcom,alias-name = "cpu5";
 		};
 
                 sensor_information13: qcom,sensor-information@13 {
@@ -2668,7 +2669,49 @@
                         qcom,sensor-name = "quiet_therm";
                 };
         };
+    
+    mitigation_profile0: qcom,limit_info-0 {
+		qcom,temperature-sensor = <&sensor_information6>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
 
+	mitigation_profile1: qcom,limit_info-1 {
+		qcom,temperature-sensor = <&sensor_information6>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
+
+	mitigation_profile2: qcom,limit_info-2 {
+		qcom,temperature-sensor = <&sensor_information7>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
+
+	mitigation_profile3: qcom,limit_info-3 {
+		qcom,temperature-sensor = <&sensor_information8>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
+    
+    mitigation_profile4: qcom,limit_info-4 {
+		qcom,temperature-sensor = <&sensor_information11>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
+    
+    mitigation_profile5: qcom,limit_info-5 {
+		qcom,temperature-sensor = <&sensor_information12>;
+		qcom,boot-frequency-mitigate;
+		qcom,hotplug-mitigation-enable;
+		qcom,emergency-frequency-mitigate;
+	};
+    
 	qcom,msm-thermal {
 		compatible = "qcom,msm-thermal";
 		qcom,sensor-id = <7>;
@@ -2681,21 +2724,18 @@
 		qcom,disable-gfx-phase-ctrl;
 		qcom,disable-cx-phase-ctrl;
 		qcom,freq-step = <2>;
-		qcom,freq-control-mask = <0x3f>;
 		qcom,core-limit-temp = <80>;
 		qcom,core-temp-hysteresis = <10>;
-		qcom,core-control-mask = <0x3e>;
 		qcom,hotplug-temp = <105>;
 		qcom,hotplug-temp-hysteresis = <40>;
-		qcom,cpu-sensors = "tsens_tz_sensor7", "tsens_tz_sensor7",
-				   "tsens_tz_sensor9", "tsens_tz_sensor10",
-				   "tsens_tz_sensor13", "tsens_tz_sensor14";
 		qcom,freq-mitigation-temp = <100>;
 		qcom,freq-mitigation-temp-hysteresis = <20>;
 		qcom,freq-mitigation-value = <768000>;
 		qcom,freq-mitigation-control-mask = <0x30>;
 		qcom,online-hotplug-core;
 		qcom,synchronous-cluster-id = <0 1>;
+        qcom,synchronous-cluster-map = <0 4 &CPU0 &CPU1 &CPU2 &CPU3>,
+			<1 2 &CPU4 &CPU5>;
 		qcom,vdd-restriction-temp = <5>;
 		qcom,vdd-restriction-temp-hysteresis = <10>;
 
