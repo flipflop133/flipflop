@@ -256,14 +256,10 @@
 #include <linux/fips.h>
 #include <linux/ptrace.h>
 #include <linux/kmemcheck.h>
+#include <linux/workqueue.h>
 #include <linux/irq.h>
 #include <linux/syscalls.h>
 #include <linux/completion.h>
-#include <linux/workqueue.h>
-
-#ifdef CONFIG_GENERIC_HARDIRQS
-# include <linux/irq.h>
-#endif
 
 #include <asm/processor.h>
 #include <asm/uaccess.h>
