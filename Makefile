@@ -382,7 +382,8 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-bool-compare \
 		   -Wno-array-bounds \
 		   -Wno-format-truncation \
-		   -Wno-stringop-overflow
+		   -Wno-stringop-overflow \
+		   -Wno-error=maybe-uninitialized
 
 
 KBUILD_AFLAGS_KERNEL :=
